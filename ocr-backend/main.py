@@ -2,7 +2,7 @@ from fastapi import FastAPI, File, UploadFile
 from fastapi.responses import JSONResponse
 from PIL import Image
 import pytesseract
-from playsound import playsound
+import simpleaudio as sa
 import os
 
 app = FastAPI()
@@ -11,7 +11,7 @@ app = FastAPI()
 pytesseract.pytesseract.tesseract_cmd = r'C:\Program Files\Tesseract-OCR\tesseract.exe'
 
 # Define the directory where the digit audio files (0-9) are located
-AUDIO_FILES_DIR = os.getcwd()  # Set to the current working directory
+AUDIO_FILES_DIR = os.path.join(os.getcwd(), 'ocr-backend')  # Set to 'ocr-backend' directory
 
 @app.post("/upload")
 async def upload(file: UploadFile = File(...)):
@@ -32,9 +32,15 @@ async def upload(file: UploadFile = File(...)):
         # Play the corresponding audio for each digit
         for digit in recognized_digits:
             if digit.isdigit():
-                audio_file_path = os.path.join(AUDIO_FILES_DIR, f"{digit}.mp3")
+                audio_file_path = os.path.join(AUDIO_FILES_DIR, f"{digit}.wav")
                 if os.path.exists(audio_file_path):
-                    playsound(audio_file_path)
+                    try:
+                        # Load and play the audio file using simpleaudio
+                        wave_obj = sa.WaveObject.from_wave_file(audio_file_path)
+                        play_obj = wave_obj.play()
+                        play_obj.wait_done()  # Wait until the sound has finished playing
+                    except Exception as audio_err:
+                        print(f"Error playing audio for digit '{digit}':", str(audio_err))
                 else:
                     print(f"Audio file for digit '{digit}' not found.")
 
