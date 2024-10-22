@@ -9,6 +9,7 @@ def root():
 
 @main.route('/upload', methods=['POST'])
 def upload():
+    print("hii")
     file = request.files.get('file')
     if file is None:
         return {"error": "No file uploaded"}, 400

@@ -22,7 +22,7 @@ def handle_upload(file):
         result = pytesseract.image_to_string(image, config=custom_config, lang='ara_number')
 
         recognized_digits = result.strip()
-
+        print("noo")
         if not recognized_digits:
             return jsonify({"message": "No digits recognized."})
 
