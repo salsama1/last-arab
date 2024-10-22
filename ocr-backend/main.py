@@ -2,7 +2,7 @@ from fastapi import FastAPI, File, UploadFile
 from fastapi.responses import JSONResponse
 from PIL import Image
 import pytesseract
-import simpleaudio as sa
+from playsound import playsound
 import os
 
 app = FastAPI()
@@ -32,17 +32,9 @@ async def upload(file: UploadFile = File(...)):
         # Play the corresponding audio for each digit
         for digit in recognized_digits:
             if digit.isdigit():
-                wav_file_path = os.path.join(AUDIO_FILES_DIR, f"{digit}.wav")
-
-                if os.path.exists(wav_file_path):
-                    try:
-                        # Play the WAV file
-                        wave_obj = sa.WaveObject.from_wave_file(wav_file_path)
-                        play_obj = wave_obj.play()
-                        play_obj.wait_done()  # Wait until playback finishes
-
-                    except Exception as e:
-                        print(f"Error playing audio: {e}")
+                audio_file_path = os.path.join(AUDIO_FILES_DIR, f"{digit}.mp3")
+                if os.path.exists(audio_file_path):
+                    playsound(audio_file_path)
                 else:
                     print(f"Audio file for digit '{digit}' not found.")
 
@@ -51,7 +43,3 @@ async def upload(file: UploadFile = File(...)):
     except Exception as e:
         print("Error:", str(e))  # Print error if any occurs
         return JSONResponse(content={"error": str(e)}, status_code=500)
-
-if __name__ == "__main__":
-    import uvicorn
-    uvicorn.run(app, host="0.0.0.0", port=8000)
