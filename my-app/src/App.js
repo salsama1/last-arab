@@ -41,10 +41,10 @@ function App() {
     formData.append('file', imageBlob, 'capture.jpg');
 
     try {
-      const response = await fetch('http://localhost:8000/upload', {
+      const response = await fetch('https://arabic-digit-ocr-backend.onrender.com/upload', {
         method: 'POST',
         body: formData,
-      });
+    });
       const data = await response.json();
       setResult(data.result);
     } catch (error) {
