@@ -4,4 +4,5 @@ pillow==10.2.0
 pytesseract==0.3.13
 simpleaudio==1.0.4
 python-multipart==0.0.9
-
+flask==3.0.3
+flask-cors==5.0.0

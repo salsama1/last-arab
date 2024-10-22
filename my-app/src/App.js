@@ -45,7 +45,7 @@ function App() {
     formData.append('file', imageBlob, 'upload.jpg');
 
     try {
-      const response = await fetch('http://localhost:8000/upload', {
+      const response = await fetch('https://last-arab.onrender.com', {
         method: 'POST',
         body: formData,
       });
