@@ -11,7 +11,7 @@ app = FastAPI()
 pytesseract.pytesseract.tesseract_cmd = r'C:\Program Files\Tesseract-OCR\tesseract.exe'
 
 # Define the directory where the digit audio files (0-9) are located
-AUDIO_FILES_DIR = os.path.join(os.getcwd(), 'ocr-backend')  # Set to 'ocr-backend' directory
+AUDIO_FILES_DIR = os.path.dirname(__file__)  # Set to the current directory of main.py
 
 @app.post("/upload")
 async def upload(file: UploadFile = File(...)):
