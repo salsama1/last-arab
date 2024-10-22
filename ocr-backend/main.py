@@ -1,5 +1,6 @@
 from fastapi import FastAPI, File, UploadFile, HTTPException
 from fastapi.responses import JSONResponse
+from fastapi.middleware.cors import CORSMiddleware
 from PIL import Image, UnidentifiedImageError
 import pytesseract
 import simpleaudio as sa
@@ -7,13 +8,21 @@ import os
 
 app = FastAPI()
 
+# Enable CORS to allow all origins (adjust for security in production)
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],  # Replace "*" with your frontend's URL for production
+    allow_credentials=True,
+    allow_methods=["POST"],  # Allow only POST requests
+    allow_headers=["*"],
+)
+
 # Set the path to the Tesseract executable
 pytesseract.pytesseract.tesseract_cmd = r'C:\Program Files\Tesseract-OCR\tesseract.exe'
 
 # Define the directory where the digit audio files (0-9) are located
 AUDIO_FILES_DIR = os.path.dirname(__file__)
 
-# Add a root endpoint to handle both GET and HEAD requests
 @app.get("/", include_in_schema=False)
 async def read_root():
     return {"message": "Welcome to the FastAPI OCR Service!"}
@@ -60,6 +69,7 @@ async def upload(file: UploadFile = File(...)):
         print("Error:", str(e))
         return JSONResponse(content={"error": str(e)}, status_code=500)
 
+# No need to specify port; Render will manage it automatically
 if __name__ == "__main__":
     import uvicorn
-    uvicorn.run("main:app", host="0.0.0.0", port=8000)
+    uvicorn.run("main:app", host="0.0.0.0")
