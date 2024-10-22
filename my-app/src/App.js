@@ -1,9 +1,10 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import './index.css';
 
 function App() {
   const [result, setResult] = useState('');
   const [uploadMode, setUploadMode] = useState(false);
+  const [selectedFile, setSelectedFile] = useState(null);  // New state for selected file
   const videoRef = useRef(null);
   const canvasRef = useRef(null);
 
@@ -18,11 +19,17 @@ function App() {
     }
   };
 
+  useEffect(() => {
+    if (!uploadMode) startCamera();
+  }, [uploadMode]);
+
   const capturePhoto = () => {
     const video = videoRef.current;
     const canvas = canvasRef.current;
     const context = canvas.getContext('2d');
 
+    canvas.width = video.videoWidth;
+    canvas.height = video.videoHeight;
     context.drawImage(video, 0, 0, canvas.width, canvas.height);
 
     canvas.toBlob((blob) => {
@@ -32,11 +39,19 @@ function App() {
     }, 'image/jpeg');
   };
 
-
-  const handleUpload = (event) => {
+  const handleFileSelect = (event) => {
     const file = event.target.files[0];
     if (file) {
-      sendImage(file);
+      setSelectedFile(file);  // Store the selected file in state
+    }
+  };
+
+  const handleUpload = () => {
+    if (selectedFile) {
+      sendImage(selectedFile);
+    } else {
+      console.error('No file selected');
+      setResult('Please select an image file first');
     }
   };
 
@@ -45,14 +60,20 @@ function App() {
     formData.append('file', imageBlob, 'upload.jpg');
 
     try {
-      const response = await fetch('https://last-arab.onrender.com', {
+      const response = await fetch('https://last-arab.onrender.com/upload', {
         method: 'POST',
         body: formData,
       });
       const data = await response.json();
-      setResult(data.result);
+      if (response.ok) {
+        setResult(data.result);
+      } else {
+        console.error(data.error);
+        setResult('Error processing the image');
+      }
     } catch (error) {
       console.error('Error:', error);
+      setResult('Error connecting to the server');
     }
   };
 
@@ -60,7 +81,6 @@ function App() {
     <div className="flex flex-col items-center justify-center h-screen bg-gray-100">
       <h1 className="text-3xl font-bold mb-6">Arabic Digit OCR</h1>
 
-      {}
       <div className="mb-4">
         <button
           onClick={() => setUploadMode(false)}
@@ -76,33 +96,19 @@ function App() {
         </button>
       </div>
 
-      {}
       {!uploadMode ? (
         <>
-          {}
           <video
             ref={videoRef}
             autoPlay
             className="mb-4 w-96 h-72 border rounded"
           />
 
-          {}
           <canvas
             ref={canvasRef}
-            width="640"
-            height="480"
             className="hidden"
           />
 
-          {}
-          <button
-            onClick={startCamera}
-            className="bg-green-500 text-white px-4 py-2 rounded mb-4"
-          >
-            Start Camera
-          </button>
-
-          {}
           <button
             onClick={capturePhoto}
             className="bg-blue-500 text-white px-4 py-2 rounded"
@@ -112,13 +118,18 @@ function App() {
         </>
       ) : (
         <>
-          {}
           <input
             type="file"
             accept="image/*"
-            onChange={handleUpload}
+            onChange={handleFileSelect}
             className="mb-4"
           />
+          <button
+            onClick={handleUpload}
+            className="bg-blue-500 text-white px-4 py-2 rounded"
+          >
+            Scan Image
+          </button>
         </>
       )}
 
