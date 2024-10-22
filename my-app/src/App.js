@@ -7,11 +7,10 @@ function App() {
   const videoRef = useRef(null);
   const canvasRef = useRef(null);
 
-  // Start the camera stream
   const startCamera = async () => {
     try {
       const stream = await navigator.mediaDevices.getUserMedia({
-        video: { facingMode: 'environment' }, // Use the back camera
+        video: { facingMode: 'environment' }, 
       });
       videoRef.current.srcObject = stream;
     } catch (error) {
@@ -19,16 +18,13 @@ function App() {
     }
   };
 
-  // Capture the photo from the video feed
   const capturePhoto = () => {
     const video = videoRef.current;
     const canvas = canvasRef.current;
     const context = canvas.getContext('2d');
 
-    // Draw the current frame from the video onto the canvas
     context.drawImage(video, 0, 0, canvas.width, canvas.height);
 
-    // Convert the canvas image to a blob
     canvas.toBlob((blob) => {
       if (blob) {
         sendImage(blob);
@@ -36,7 +32,7 @@ function App() {
     }, 'image/jpeg');
   };
 
-  // Handle image upload
+
   const handleUpload = (event) => {
     const file = event.target.files[0];
     if (file) {
@@ -44,7 +40,6 @@ function App() {
     }
   };
 
-  // Send the captured image or uploaded file to the back end
   const sendImage = async (imageBlob) => {
     const formData = new FormData();
     formData.append('file', imageBlob, 'upload.jpg');
@@ -65,7 +60,7 @@ function App() {
     <div className="flex flex-col items-center justify-center h-screen bg-gray-100">
       <h1 className="text-3xl font-bold mb-6">Arabic Digit OCR</h1>
 
-      {/* Mode Selection */}
+      {}
       <div className="mb-4">
         <button
           onClick={() => setUploadMode(false)}
@@ -81,17 +76,17 @@ function App() {
         </button>
       </div>
 
-      {/* Conditional rendering based on mode */}
+      {}
       {!uploadMode ? (
         <>
-          {/* Video element for camera preview */}
+          {}
           <video
             ref={videoRef}
             autoPlay
             className="mb-4 w-96 h-72 border rounded"
           />
 
-          {/* Hidden canvas to capture images */}
+          {}
           <canvas
             ref={canvasRef}
             width="640"
@@ -99,7 +94,7 @@ function App() {
             className="hidden"
           />
 
-          {/* Start Camera Button */}
+          {}
           <button
             onClick={startCamera}
             className="bg-green-500 text-white px-4 py-2 rounded mb-4"
@@ -107,7 +102,7 @@ function App() {
             Start Camera
           </button>
 
-          {/* Capture Button */}
+          {}
           <button
             onClick={capturePhoto}
             className="bg-blue-500 text-white px-4 py-2 rounded"
@@ -117,7 +112,7 @@ function App() {
         </>
       ) : (
         <>
-          {/* File Upload Input */}
+          {}
           <input
             type="file"
             accept="image/*"
