@@ -13,7 +13,8 @@ pytesseract.pytesseract.tesseract_cmd = r'C:\Program Files\Tesseract-OCR\tessera
 # Define the directory where the digit audio files (0-9) are located
 AUDIO_FILES_DIR = os.path.dirname(__file__)
 
-@app.get("/")
+# Add a root endpoint to handle both GET and HEAD requests
+@app.get("/", include_in_schema=False)
 async def read_root():
     return {"message": "Welcome to the FastAPI OCR Service!"}
 
