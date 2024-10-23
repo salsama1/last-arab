@@ -7,6 +7,8 @@ import os
 
 app = FastAPI()
 
+os.environ['TESSDATA_PREFIX'] = '/usr/share/tesseract-ocr/4.00/tessdata'
+
 pytesseract.pytesseract.tesseract_cmd = 'tesseract'
 
 AUDIO_FILES_DIR = os.path.dirname(__file__)
