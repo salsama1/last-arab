@@ -7,7 +7,7 @@ import os
 
 app = FastAPI()
 
-pytesseract.pytesseract.tesseract_cmd = r'C:\Program Files\Tesseract-OCR\tesseract.exe'
+pytesseract.pytesseract.tesseract_cmd = 'tesseract'
 
 AUDIO_FILES_DIR = os.path.dirname(__file__)
 
